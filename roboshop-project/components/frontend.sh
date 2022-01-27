@@ -1,6 +1,5 @@
 #The frontend is the service in RobotShop to serve the web content over Nginx.
-LOG_FILE=/tmp/roboshop.log
-rm -f $LOG_FILE  # It will clear the log every time before running.
+source components/common.sh #calling the common log file for reusing
 echo "Installing Nginx"
 yum install nginx -y &>>$LOG_FILE
 
