@@ -36,6 +36,7 @@
 #
 #```
 
+rm -f /tmp/roboshop.log  # It will clear the log every time before running.
 echo "Installing Nginx"
 yum install nginx -y >/tmp/roboshop.log
 
