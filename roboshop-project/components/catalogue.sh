@@ -57,7 +57,7 @@ echo "Create User"
 useradd roboshop &>>LOG_FILE
 
 echo "Download Catalogue code"
-curl -s -L -o /tmp/catalogue.zip "https://github.com/roboshop-devops-project/catalogue/archive/main.zip" &>>LOG_FILE
+curl -s -L -o /tmp/catalogue.zip "https://github.com/roboshop-devops-project/catalogue/archive/main.zip" &>>$LOG_FILE
 
 echo "Extract Catalogue code"
 cd /tmp/
@@ -73,5 +73,16 @@ echo "Install NodeJs Dependency"
 cd /home/roboshop/catalogue
 npm install &>>$LOG_FILE
 
-chown roboshop:roboshop /home/roboshop/ -R
+chown roboshop:roboshop /home/roboshop/ -R &>>$LOG_FILE
+
+echo "Update systemD file"
+sed -i -e 's/MONGO_DNSNAME/mongodb.roboshop.internal/' /home/roboshop/catalogue/systemd.service &>>$LOG_FILE
+
+echo "setup catalogue SystemD File"
+mv /home/roboshop/catalogue/systemd.service /etc/systemd/system/catalogue.service &>>$LOG_FILE
+
+echo "start catalogue"
+systemctl daemon-reload &>>$LOG_FILE
+systemctl enable catalogue &>>$LOG_FILE
+systemctl start catalogue &>>$LOG_FILE
 
