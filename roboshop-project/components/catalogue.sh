@@ -48,13 +48,13 @@
 source components/common.sh
 
 echo "Setup NodeJs Repo"
-curl -fsSL https://rpm.nodesource.com/setup_lts.x | bash - &>>LOG_FILE
+curl -fsSL https://rpm.nodesource.com/setup_lts.x | bash - &>>$LOG_FILE
 
 echo "Install NodeJS"
-yum install nodejs gcc-c++ -y &>>LOG_FILE
+yum install nodejs gcc-c++ -y &>>$LOG_FILE
 
 echo "Create User"
-useradd roboshop &>>LOG_FILE
+useradd roboshop &>>$LOG_FILE
 
 echo "Download Catalogue code"
 curl -s -L -o /tmp/catalogue.zip "https://github.com/roboshop-devops-project/catalogue/archive/main.zip" &>>$LOG_FILE
