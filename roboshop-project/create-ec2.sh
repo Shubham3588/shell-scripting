@@ -34,4 +34,17 @@ INSTANCE_CREATE() {
   else
     echo "Instance ${INSTANCE_NAME} is already exists, Hence not creating"
   fi
- }
+
+  IPADDRESS=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=${INSTANCE_NAME}" --query 'Reservations[*].Instances[*].PrivateIpAddress' --output text)
+
+  echo '{
+              "Comment": "CREATE/DELETE/UPSERT a record ",
+              "Changes": [{
+              "Action": "UPSERT",
+                          "ResourceRecordSet": {
+                                      "Name": "DNSNAME.roboshop.internal",
+                                      "Type": "A",
+                                      "TTL": 300,
+                                   "ResourceRecords": [{ "Value": "IPADDRESS"}]
+  }}]
+  }' | sed -e "s/DNSNAME/${INSTANCE_NAME}/" -e "s/IPADDRESS/${IPADDRESS}/"  >/tmp/record.json
