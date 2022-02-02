@@ -34,3 +34,4 @@ INSTANCE_CREATE() {
   else
     echo "Instance ${INSTANCE_NAME} is already exists, Hence not creating"
   fi
+ }
