@@ -15,6 +15,11 @@ else
   echo AMI ID = ${AMI_ID}
 fi
 
+PRIVATE_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=${INSTANCE_NAME}" --query 'Reservations[*].Instances[*].PrivateIpAddress' --output text)
 
-
+if [ -z "$(PRIVATE_IP)" ]; then
 aws ec2 run-instances --image-id ${AMI_ID} --instance-type t3.micro --output text --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${INSTANCE_NAME}}]"
+else
+  echo "Instance ${INSTANCE_NAME} is already exists, Hence not creating."
+  exit
+  fi
