@@ -20,8 +20,11 @@ NODEJS () {
   yum install nodejs gcc-c++ -y &>>$LOG_FILE
   STAT $?
 
-  echo "Create User"
+  echo "Create App User"
+  id roboshop &>>$LOG_FILE
+  if [ $? -ne 0 ]; then
   useradd roboshop &>>$LOG_FILE
+  fi
   STAT $?
 
   echo "Download ${COMPONENT} code"
