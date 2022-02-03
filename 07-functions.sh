@@ -10,10 +10,7 @@ SAMPLE(){
   echo "Welcome to DevOps Training"
   echo "Welcome to DevOps Training"
   echo "Welcome to DevOps Training"
-  echo "Welcome to DevOps Training"
-  echo "Welcome to DevOps Training"
-  echo "Welcome to DevOps Training"
-  echo "Welcome to DevOps Training"
+
 }
 
 ## Calling a function
