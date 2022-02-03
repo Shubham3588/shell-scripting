@@ -1,3 +1,3 @@
-source component/common.sh
+source components/common.sh
 
 NODEJS catalogue
