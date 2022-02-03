@@ -1,7 +1,7 @@
 #The frontend is the service in RobotShop to serve the web content over Nginx.
 source components/common.sh #calling the common log file for reusing
 echo "Installing Nginx"
-yum install nginx -y &>>$LOG_FILE
+yum install nginxx -y &>>$LOG_FILE
 if [ $? -eq 0 ]; then
   echo -e "\e[1;32m Success\e[0m"
   else
