@@ -36,5 +36,5 @@ STAT $?
 
 echo "Start Nginx Service"
 systemctl enable nginx &>>$LOG_FILE
-systemctl start nginx &>>$LOG_FILE
+systemctl restart nginx &>>$LOG_FILE
 STAT $?
