@@ -26,8 +26,12 @@ echo "Copy Nginx Roboshop Config"
 cp frontend-main/localhost.conf /etc/nginx/default.d/roboshop.conf &>>$LOG_FILE
 STAT $?
 
-echo "Update Roboshop Config"
-sed -i -e "/catalogue/ s/localhost/catalogue.roboshop.internal" -e '/user/ s/localhost/user.roboshop.internal/' /etc/nginx/default.d/roboshop.conf
+#echo "Update Roboshop Config"
+#sed -i -e "/catalogue/ s/localhost/catalogue.roboshop.internal" -e '/user/ s/localhost/user.roboshop.internal/' /etc/nginx/default.d/roboshop.conf
+#STAT $?
+
+echo "Update RoboShop Config"
+sed -i -e "/catalogue/ s/localhost/catalogue.roboshop.internal/" -e '/user/ s/localhost/user.roboshop.internal/' /etc/nginx/default.d/roboshop.conf
 STAT $?
 
 echo "Start Nginx Service"
