@@ -51,7 +51,7 @@ NODEJS () {
   chown roboshop:roboshop /home/roboshop/ -R &>>$LOG_FILE
 
   echo "Update ${COMPONENT} systemD file"
-  sed -i -e 's/MONGO_DNSNAME/mongodb.roboshop.internal/' -e 's/REDIS_ENDPOINT/redis.roboshop.internal/' -e 's/MONGO_ENDPOINT/mongodb.roboshop.internal' /home/roboshop/${COMPONENT}/systemd.service &>>$LOG_FILE
+  sed -i -e 's/MONGO_DNSNAME/mongodb.roboshop.internal/' -e 's/REDIS_ENDPOINT/redis.roboshop.internal/' -e 's/MONGO_ENDPOINT/mongodb.roboshop.internal/' /home/roboshop/${COMPONENT}/systemd.service &>>$LOG_FILE
   STAT $?
 
   echo "setup ${COMPONENT} SystemD File"
