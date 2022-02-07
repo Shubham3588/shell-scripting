@@ -13,6 +13,51 @@ STAT() {
   fi
 }
 
+APP_USER_SETUP_WITH_APP() {
+
+  echo "Create App User"
+  id roboshop &>>$LOG_FILE
+  if [ $? -ne 0 ]; then
+  useradd roboshop &>>$LOG_FILE
+  fi
+  STAT $?
+
+    echo "Download ${COMPONENT} code"
+    curl -s -L -o /tmp/${COMPONENT}.zip "https://github.com/roboshop-devops-project/${COMPONENT}/archive/main.zip" &>>$LOG_FILE
+    STAT $?
+
+    echo "Extract ${COMPONENT} code"
+    cd /tmp/
+    unzip -o ${COMPONENT}.zip &>>$LOG_FILE
+    STAT $?
+
+    echo "clean old ${COMPONENT} CONTENT"
+    rm -rf /home/roboshop/${COMPONENT}
+    STAT $?
+
+    echo "copy ${COMPONENT} content"
+    cp -r ${COMPONENT}-main /home/roboshop/${COMPONENT}
+    STAT $?
+}
+
+SYSTEMD_SETUP() {
+    chown roboshop:roboshop /home/roboshop/ -R &>>$LOG_FILE
+
+    echo "Update ${COMPONENT} systemD file"
+    sed -i -e 's/MONGO_DNSNAME/mongodb.roboshop.internal/' -e 's/REDIS_ENDPOINT/redis.roboshop.internal/' -e 's/MONGO_ENDPOINT/mongodb.roboshop.internal/' -e 's/CATALOGUE_ENDPOINT/catalogue.roboshop.internal/' -e 's/CARTENDPOINT/cart.roboshop.internal/' -e 's/DBHOST/mysql.roboshop.internal/' /home/roboshop/${COMPONENT}/systemd.service &>>$LOG_FILE
+    STAT $?
+
+    echo "setup ${COMPONENT} SystemD File"
+    mv /home/roboshop/${COMPONENT}/systemd.service /etc/systemd/system/${COMPONENT}.service &>>$LOG_FILE
+    STAT $?
+
+    echo "start ${COMPONENT}"
+    systemctl daemon-reload &>>$LOG_FILE
+    systemctl enable ${COMPONENT} &>>$LOG_FILE
+    systemctl restart ${COMPONENT} &>>$LOG_FILE
+    STAT $?
+}
+
 NODEJS () {
   COMPONENT=$1
   echo "Setup NodeJs Repo"
@@ -23,52 +68,31 @@ NODEJS () {
   yum install nodejs gcc-c++ -y &>>$LOG_FILE
   STAT $?
 
-  echo "Create App User"
-  id roboshop &>>$LOG_FILE
-  if [ $? -ne 0 ]; then
-  useradd roboshop &>>$LOG_FILE
-  fi
-  STAT $?
+  APP_USER_SETUP_WITH_APP
 
-  echo "Download ${COMPONENT} code"
-  curl -s -L -o /tmp/${COMPONENT}.zip "https://github.com/roboshop-devops-project/${COMPONENT}/archive/main.zip" &>>$LOG_FILE
-  STAT $?
 
-  echo "Extract ${COMPONENT} code"
-  cd /tmp/
-  unzip -o ${COMPONENT}.zip &>>$LOG_FILE
-  STAT $?
-
-  echo "clean old ${COMPONENT}"
-  rm -rf /home/roboshop/${COMPONENT}
-  STAT $?
-
-  echo "copy ${COMPONENT} content"
-  cp -r ${COMPONENT}-main /home/roboshop/${COMPONENT}
-  STAT $?
   echo "Install NodeJs Dependency"
   cd /home/roboshop/${COMPONENT}
   npm install &>>$LOG_FILE
   STAT $?
 
-  chown roboshop:roboshop /home/roboshop/ -R &>>$LOG_FILE
-
-  echo "Update ${COMPONENT} systemD file"
-  sed -i -e 's/MONGO_DNSNAME/mongodb.roboshop.internal/' -e 's/REDIS_ENDPOINT/redis.roboshop.internal/' -e 's/MONGO_ENDPOINT/mongodb.roboshop.internal/' -e 's/CATALOGUE_ENDPOINT/catalogue.roboshop.internal/' /home/roboshop/${COMPONENT}/systemd.service &>>$LOG_FILE
-  STAT $?
-
-  echo "setup ${COMPONENT} SystemD File"
-  mv /home/roboshop/${COMPONENT}/systemd.service /etc/systemd/system/${COMPONENT}.service &>>$LOG_FILE
-  STAT $?
-
-  echo "start ${COMPONENT}"
-  systemctl daemon-reload &>>$LOG_FILE
-  systemctl enable ${COMPONENT} &>>$LOG_FILE
-  systemctl restart ${COMPONENT} &>>$LOG_FILE
-  STAT $?
-
+  SYSTEMD_SETUP
 }
 
 JAVA() {
   COMPONENT=$1
+echo "Install Maven"
+yum install maven -y &>>$LOG_FILE
+STAT $?
+
+APP_USER_SETUP_WITH_APP
+
+echo "Compile ${COMPONENT} code"
+cd /home/roboshop/${COMPONENT}
+mvn clean package &>>$LOG_FILE
+mv target/shipping-1.0.jar shipping.jar
+STAT $?
+
+SYSTEMD_SETUP
+
 }
