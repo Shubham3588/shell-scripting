@@ -68,3 +68,7 @@ NODEJS () {
   STAT $?
 
 }
+
+JAVA() {
+  COMPONENT=$1
+}
