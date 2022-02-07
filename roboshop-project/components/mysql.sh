@@ -34,5 +34,5 @@ unzip -o mysql.zip &>>$LOG_FILE
 STAT $?
 
 echo "Load Schema"
-mysql -uroot -pRoboShop@1 <shipping.sql &>>$LOG_FILE
+mysql -uroot -pRoboShop@1 <mysql-main/shipping.sql &>>$LOG_FILE
 STAT $?
