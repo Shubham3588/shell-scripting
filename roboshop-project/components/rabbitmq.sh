@@ -35,3 +35,4 @@ STAT $?
 
 echo "Create Application User"
 rabbitmqctl add_user roboshop roboshop123 &>>$LOG_FILE
+STAT $?
