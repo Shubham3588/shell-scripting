@@ -31,3 +31,7 @@ STAT $?
 echo "Start RabbitMQ Server"
 systemctl enable rabbitmq-server &>>$LOG_FILE
 systemctl start rabbitmq-server  &>>$LOG_FILE
+STAT $?
+
+echo "Create Application User"
+rabbitmqctl add_user roboshop roboshop123 &>>$LOG_FILE
