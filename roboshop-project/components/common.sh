@@ -110,6 +110,11 @@ cd /home/roboshop/payment
 pip3 install -r requirements.txt &>>$LOG_FILE
 STAT $?
 
+echo "Update Application Config"
+USER_ID=$(id -u roboshop)
+GROUP_ID=$(id -g roboshop)
+sed -i -e "/uid/ c uid = ${USER_ID}" -e "/gid/ c gid = ${GROUP_ID}" /home/roboshop/{{COMPONENT}}/{{COMPONENT}}.ini
+STAT $?
 #SYSTEMD_SETUP
 
 }
