@@ -99,6 +99,7 @@ SYSTEMD_SETUP
 
 PYTHON() {
   COMPONENT=$1
+
 echo "Install Python"
 yum install python36 gcc python3-devel -y &>>$LOG_FILE
 STAT $?
@@ -106,7 +107,7 @@ STAT $?
 APP_USER_SETUP_WITH_APP
 
 echo "Install Python Dependencies for ${COMPONENT}"
-cd /home/roboshop/payment
+cd /home/roboshop/${COMPONENT}
 pip3 install -r requirements.txt &>>$LOG_FILE
 STAT $?
 
@@ -118,4 +119,43 @@ STAT $?
 
 SYSTEMD_SETUP
 
+}
+
+GOLANG() {
+  COMPONENT=$1
+
+  echo "Install GOLANG"
+  yum install golang -y &>>$LOG_FILE
+  STAT $?
+
+  APP_USER_SETUP_WITH_APP
+
+  echo "Build Golang code"
+  cd /home/roboshop/${COMPONENT}
+  go mod init dispatch &>>$LOG_FILE
+  go get &>>$LOG_FILE
+  go build &>>$LOG_FILE
+  STAT $?
+
+
+  1. Switch to roboshop user and perform the following commands.
+
+  ```bash
+  $ curl -L -s -o /tmp/dispatch.zip https://github.com/roboshop-devops-project/dispatch/archive/refs/heads/main.zip
+  $ unzip /tmp/dispatch.zip
+  $ mv dispatch-main dispatch
+  $ cd dispatch
+  $ go mod init dispatch
+  $ go get
+  $ go build
+  ```
+
+  1. Update the systemd file and configure the dispatch service in systemd
+
+  ```bash
+  # mv /home/roboshop/dispatch/systemd.service /etc/systemd/system/dispatch.service
+  # systemctl daemon-reload
+  # systemctl enable dispatch
+  # systemctl start dispatch
+  ```
 }

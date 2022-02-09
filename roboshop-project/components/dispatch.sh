@@ -1,3 +1,3 @@
-echo installing dispatch
+source components/common.sh
 
-hello world this is new folder test2
+GOLANG dispatch
